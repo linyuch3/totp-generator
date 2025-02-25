@@ -36,12 +36,14 @@ const app = Vue.createApp({
       updatingIn: 30,
       token: null,
       clipboardButton: null,
+      history: []
     };
   },
 
   mounted: function () {
     this.getKeyFromUrl();
-    this.getQueryParameters()
+    this.getQueryParameters();
+    this.loadHistory();
     this.update();
 
     this.intervalHandle = setInterval(this.update, 1000);
@@ -95,6 +97,32 @@ const app = Vue.createApp({
       if (queryParams.algorithm) {
         this.algorithm = queryParams.algorithm;
       }
+    },
+    generateQRCode: function () {
+      const qrcodeContainer = document.getElementById("qrcode");
+      qrcodeContainer.innerHTML = ""; // 清空之前的二维码
+      new QRCode(qrcodeContainer, {
+        text: this.secret_key,
+        width: 128,
+        height: 128
+      });
+    },
+    saveToHistory: function () {
+      if (this.secret_key && !this.history.includes(this.secret_key)) {
+        this.history.push(this.secret_key);
+        localStorage.setItem('totp_history', JSON.stringify(this.history));
+      }
+    },
+    loadHistory: function () {
+      const history = localStorage.getItem('totp_history');
+      if (history) {
+        this.history = JSON.parse(history);
+      }
+    }
+  },
+  watch: {
+    secret_key(newVal) {
+      this.saveToHistory();
     }
   }
 });
