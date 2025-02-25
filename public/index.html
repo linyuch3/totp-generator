@@ -41,7 +41,7 @@
     }
 
     .box {
-      background-color: #f5f5f5;
+      background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
       border-radius: 8px;
       padding: 2rem;
     }
@@ -51,7 +51,7 @@
     }
 
     .instructions {
-      background-color: #f5f5f5;
+      background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
       border-radius: 8px;
       padding: 1rem;
       margin-top: 2rem;
@@ -73,6 +73,12 @@
 
     .copy-button .icon {
       margin-right: 0.5rem;
+    }
+
+    .token {
+      background: linear-gradient(135deg, #ff3860, #ff4b7f);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
     @media screen and (min-width: 1068px) {
@@ -123,7 +129,7 @@
       </div>
 
       <div class="box">
-        <p class="title is-size-1 has-text-centered" id="token">{{ token }}</p>
+        <p class="title is-size-1 has-text-centered token" id="token">{{ token }}</p>
       </div>
 
       <div class="control is-clearfix has-text-centered">
