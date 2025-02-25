@@ -45,28 +45,28 @@
       <h1 class="title">TOTP Token Generator</h1>
 
       <div class="field">
-        <label class="label is-uppercase">Your Secret Key</label>
+        <label class="label is-uppercase">你的秘钥</label>
         <div class="control">
           <input class="input" type="text" v-model="secret_key" placeholder="The secret key (in base-32 format)">
         </div>
       </div>
 
       <div class="field">
-        <label class="label is-uppercase">Number of Digits</label>
+        <label class="label is-uppercase">验证码位数默认6位</label>
         <div class="control">
           <input class="input" type="text" v-model="digits" placeholder="Usually 6">
         </div>
       </div>
 
       <div class="field">
-        <label class="label is-uppercase">Token Period (in seconds)</label>
+        <label class="label is-uppercase">令牌周期（以秒为单位）</label>
         <div class="control">
           <input class="input" type="text" v-model="period" placeholder="Usually 30">
         </div>
       </div>
 
       <div class="content">
-        <span class="has-text-grey is-size-7">Updating in {{ updatingIn }} seconds</span>
+        <span class="has-text-grey is-size-7">多少秒内更新 {{ updatingIn }} seconds</span>
         <progress class="progress is-info is-small" v-bind:value="updatingIn" :max="period"></progress>
       </div>
 
@@ -78,6 +78,15 @@
         <a class="button is-large is-light is-pulled-right" id="clipboard-button" data-clipboard-target="#token" title="Copy token to clipboard">
           <img src="img/clippy.svg" height="36" width="36">
         </a>
+      </div>
+
+      <!-- 使用说明部分 -->
+      <div class="content">
+        <h2 class="title is-size-4">使用说明</h2>
+        <p>1. 在“秘钥”输入框中输入你的秘钥，该秘钥是在订单卡密中一行字符串。</p>
+        <p>2. 输入验证码位数和令牌周期。通常，验证码位数默认为 6 位，令牌周期默认为 30 秒，但是你也可以根据自己的需要进行修改。</p>
+        <p>3. 获取验证码：在输入完以上信息后，页面会自动更新验证码并将其显示在页面上。你可以复制验证码用于登录。</p>
+        <p>4. 复制验证码：点击“红色复制”按钮，即可将验证码复制到剪贴板上，粘贴到验证码输入框进行账号验证登录。</p>
       </div>
 
     </div>
