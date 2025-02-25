@@ -42,7 +42,7 @@
 
     <div class="container">
 
-      <h1 class="title">TOTP Token Generator</h1>
+      <h1 class="title">登录验证码获取</h1>
 
       <div class="field">
         <label class="label is-uppercase">你的秘钥</label>
@@ -66,7 +66,7 @@
       </div>
 
       <div class="content">
-        <span class="has-text-grey is-size-7">多少秒内更新 {{ updatingIn }} seconds</span>
+        <span class="has-text-grey is-size-7">秒内更新 {{ updatingIn }} seconds</span>
         <progress class="progress is-info is-small" v-bind:value="updatingIn" :max="period"></progress>
       </div>
 
