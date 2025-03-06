@@ -5,258 +5,133 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>TOTP Generator</title>
   <link rel="stylesheet" href="css/bulma-0.9.4.min.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary-color: #4361ee;
-      --secondary-color: #3a0ca3;
-      --accent-color: #f72585;
-      --background-light: #f8f9fa;
-      --text-color: #2b2d42;
-      --token-gradient: linear-gradient(135deg, #4361ee, #3a0ca3);
+      --primary-color: #3273dc;
+      --accent-color: #f14668;
+      --background-light: #f5f5f5;
+      --text-color: #363636;
     }
 
-    [v-cloak] {
-      display: none;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
+    [v-cloak] { display: none; }
 
     body {
-      font-family: 'Nunito', sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, sans-serif;
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
       background-color: var(--background-light);
       color: var(--text-color);
+      display: flex;
+      flex-direction: column;
     }
 
-    .main-content {
-      flex: 1;
-    }
-
-    .footer {
-      margin-top: auto;
-      padding: 2rem;
-      background-color: #ffffff;
-      box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
-    }
-
-    .container {
-      margin-top: 2rem;
-      margin-bottom: 2rem;
-    }
-
+    .main-content { flex: 1; }
+    .footer { padding: 1.5rem 1rem; background-color: white; }
+    .container { max-width: 500px; }
+    
     .title {
       color: var(--primary-color);
-      font-weight: 700;
-      letter-spacing: -0.5px;
+      font-size: 1.7rem;
+      margin-bottom: 1rem;
     }
 
     .card {
-      border-radius: 16px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-      overflow: hidden;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      background: #ffffff;
-      margin-bottom: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 1rem;
     }
 
     .card-header {
-      background: var(--token-gradient);
-      padding: 1.5rem;
-      color: white;
-      border-bottom: none;
+      background: var(--primary-color);
+      padding: 0.8rem;
+      border-radius: 8px 8px 0 0;
     }
 
     .card-header-title {
       color: white;
-      font-size: 1.5rem;
-      font-weight: 700;
+      font-size: 1.2rem;
     }
 
-    .card-content {
-      padding: 2rem;
+    .card-content { padding: 1rem; }
+
+    .field:not(:last-child) { margin-bottom: 0.75rem; }
+    
+    .label {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
     }
 
     .input {
-      border-radius: 8px;
-      box-shadow: none;
-      transition: all 0.3s ease;
-      border: 2px solid #e9ecef;
-    }
-
-    .input:focus {
-      box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
-      border-color: var(--primary-color);
-    }
-
-    .label {
-      font-weight: 600;
-      color: var(--text-color);
-      margin-bottom: 0.5rem;
+      border-radius: 4px;
+      height: 2.25rem;
     }
 
     .progress {
-      height: 8px;
-      border-radius: 4px;
-      background-color: #e9ecef;
-      margin-top: 0.5rem;
-    }
-
-    .progress.is-info {
-      background-color: #e9ecef;
-    }
-
-    .progress.is-info::-webkit-progress-value {
-      background-color: var(--primary-color);
-      transition: width 1s linear;
+      height: 6px;
+      border-radius: 3px;
+      margin-top: 0.25rem;
     }
 
     .token-display {
       background: white;
-      border-radius: 16px;
-      padding: 2.5rem 1.5rem;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+      border-radius: 6px;
+      padding: 1rem 0.5rem;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
       text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .token-display::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 8px;
-      background: var(--token-gradient);
+      margin: 0.5rem 0;
+      border-left: 3px solid var(--primary-color);
     }
 
     .token {
-      font-size: 3rem;
-      font-weight: 700;
-      letter-spacing: 4px;
-      color: var(--text-color);
-      text-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      transition: all 0.3s ease;
-      background: var(--token-gradient);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    @media (max-width: 768px) {
-      .token {
-        font-size: 2.5rem;
-        letter-spacing: 2px;
-      }
+      font-size: 2.2rem;
+      font-weight: 600;
+      letter-spacing: 2px;
+      color: var(--primary-color);
     }
 
     .copy-button {
       background: var(--accent-color);
       color: white;
       border: none;
-      padding: 0.8rem 1.8rem;
-      border-radius: 8px;
-      font-size: 1.1rem;
-      font-weight: 600;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      font-weight: 500;
       cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 12px rgba(247, 37, 133, 0.3);
-      margin-top: 1.5rem;
+      transition: all 0.2s ease;
+      margin-top: 0.5rem;
     }
 
     .copy-button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(247, 37, 133, 0.4);
-      background-color: #ff0a78;
-      color: white;
-    }
-
-    .copy-button:active {
-      transform: translateY(1px);
-    }
-
-    .copy-button .icon {
-      margin-right: 0.8rem;
+      opacity: 0.9;
     }
 
     .instructions {
       background: white;
-      border-radius: 16px;
-      padding: 2rem;
-      margin-top: 2rem;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .instructions::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 8px;
-      height: 100%;
-      background: var(--token-gradient);
+      border-radius: 6px;
+      padding: 1rem;
+      margin-top: 1rem;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      border-left: 3px solid var(--primary-color);
+      font-size: 0.9rem;
     }
 
     .instructions h2 {
       color: var(--primary-color);
-      margin-bottom: 1.2rem;
-      font-weight: 700;
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
     }
 
-    .instructions ol {
-      margin-left: 1rem;
-      counter-reset: item;
+    .instructions ol { 
+      margin-left: 0.5rem;
+      padding-left: 1.2rem;
     }
 
-    .instructions li {
-      margin-bottom: 1rem;
-      list-style-type: none;
-      position: relative;
-      padding-left: 2rem;
-    }
-
-    .instructions li::before {
-      counter-increment: item;
-      content: counter(item);
-      background: var(--token-gradient);
-      color: white;
-      font-weight: bold;
-      border-radius: 50%;
-      width: 24px;
-      height: 24px;
-      display: inline-flex;
-      justify-content: center;
-      align-items: center;
-      position: absolute;
-      left: 0;
-      top: 0;
-      font-size: 0.8rem;
-    }
-
-    .field:not(:last-child) {
-      margin-bottom: 1.5rem;
-    }
+    .instructions li { margin-bottom: 0.5rem; }
 
     .time-remaining {
-      display: inline-block;
-      background-color: #e9ecef;
-      padding: 0.4rem 0.8rem;
-      border-radius: 20px;
-      font-size: 0.9rem;
-      color: var(--text-color);
-      margin-bottom: 0.5rem;
+      font-size: 0.8rem;
+      color: #666;
     }
 
     .pulse {
@@ -264,52 +139,30 @@
     }
 
     @keyframes pulse {
-      0% {
-        transform: scale(1);
-      }
-      50% {
-        transform: scale(1.05);
-      }
-      100% {
-        transform: scale(1);
-      }
+      0% { opacity: 1; }
+      50% { opacity: 0.7; }
+      100% { opacity: 1; }
     }
 
     .toast {
       position: fixed;
-      top: 2rem;
+      top: 1rem;
       left: 50%;
       transform: translateX(-50%);
-      background-color: #4caf50;
+      background-color: #48c774;
       color: white;
-      padding: 0.8rem 1.5rem;
-      border-radius: 8px;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      font-size: 0.9rem;
       z-index: 1000;
       opacity: 0;
       visibility: hidden;
-      transition: opacity 0.3s, visibility 0.3s;
+      transition: opacity 0.3s;
     }
 
     .toast.show {
       opacity: 1;
       visibility: visible;
-    }
-
-    footer a {
-      color: var(--primary-color);
-      font-weight: 600;
-      transition: color 0.3s ease;
-    }
-
-    footer a:hover {
-      color: var(--secondary-color);
-    }
-
-    @media screen and (min-width: 1068px) {
-      .container {
-        max-width: 700px;
-      }
     }
   </style>
 </head>
@@ -323,13 +176,11 @@
 
   <section id="app" class="section main-content" v-cloak>
     <div class="container">
-      <h1 class="title has-text-centered">TOTP 登录验证码生成器</h1>
+      <h1 class="title has-text-centered">TOTP 验证码生成器</h1>
       
       <div class="card">
         <header class="card-header">
-          <p class="card-header-title">
-            生成您的验证码
-          </p>
+          <p class="card-header-title">生成验证码</p>
         </header>
         <div class="card-content">
           <div class="field">
@@ -339,22 +190,27 @@
             </div>
           </div>
 
-          <div class="field">
-            <label class="label">验证码位数</label>
-            <div class="control">
-              <input class="input" type="number" v-model="digits" placeholder="默认6位">
+          <div class="columns is-mobile">
+            <div class="column is-half">
+              <div class="field">
+                <label class="label">验证码位数</label>
+                <div class="control">
+                  <input class="input" type="number" v-model="digits" placeholder="6">
+                </div>
+              </div>
+            </div>
+            <div class="column is-half">
+              <div class="field">
+                <label class="label">周期(秒)</label>
+                <div class="control">
+                  <input class="input" type="number" v-model="period" placeholder="30">
+                </div>
+              </div>
             </div>
           </div>
 
           <div class="field">
-            <label class="label">令牌周期（秒）</label>
-            <div class="control">
-              <input class="input" type="number" v-model="period" placeholder="默认30秒">
-            </div>
-          </div>
-
-          <div class="field">
-            <span class="time-remaining">{{ updatingIn }} 秒后更新</span>
+            <span class="time-remaining">{{ updatingIn }}秒后更新</span>
             <progress class="progress is-info" v-bind:value="updatingIn" :max="period"></progress>
           </div>
 
@@ -364,40 +220,29 @@
 
           <div class="has-text-centered">
             <button class="copy-button" id="clipboard-button" data-clipboard-target="#token">
-              <span class="icon">
-                <i class="fas fa-copy"></i>
-              </span>
-              <span>复制验证码</span>
+              复制验证码
             </button>
           </div>
         </div>
       </div>
 
-      <div class="instructions">
-        <h2 class="title is-4">使用说明</h2>
+      <details class="instructions">
+        <summary><b>使用说明</b></summary>
         <ol>
-          <li>在<strong>秘钥</strong>输入框中粘贴您的秘钥字符串（可在订单卡密中找到）。</li>
-          <li>验证码位数默认为 <strong>6</strong> 位，通常无需修改。</li>
-          <li>令牌周期默认为 <strong>30</strong> 秒，表示验证码每30秒刷新一次。</li>
-          <li>系统会自动计算并显示当前有效的验证码，您可以点击<strong>复制验证码</strong>按钮快速复制。</li>
-          <li>注意倒计时，当剩余时间少于5秒时，验证码会闪烁提醒您即将更新。</li>
+          <li>在<strong>秘钥</strong>输入框中粘贴您的秘钥字符串</li>
+          <li>验证码位数默认为6位，令牌周期默认为30秒</li>
+          <li>验证码每30秒自动更新一次</li>
+          <li>点击<strong>复制验证码</strong>按钮快速复制</li>
         </ol>
-      </div>
+      </details>
     </div>
   </section>
 
-  <footer class="footer">
-    <div class="container">
-      <div class="content has-text-centered">
-        <p>精心设计 by <a href="https://hailizi.hkg.email" target="_blank">海蛎子</a></p>
-      </div>
-    </div>
+  <footer class="footer has-text-centered">
+    <small>TOTP 验证码生成工具 &copy; 2025</small>
   </footer>
 
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-  
   <script>
-    // 需要添加到 app.js 或直接在此处使用
     document.addEventListener('DOMContentLoaded', function() {
       const app = Vue.createApp({
         data() {
@@ -410,12 +255,8 @@
           }
         },
         watch: {
-          secret_key() {
-            this.generateToken();
-          },
-          digits() {
-            this.generateToken();
-          },
+          secret_key() { this.generateToken(); },
+          digits() { this.generateToken(); },
           period() {
             this.generateToken();
             this.startCountdown();
@@ -435,7 +276,7 @@
             
             try {
               const totp = new OTPAuth.TOTP({
-                issuer: 'TOTP Generator',
+                issuer: 'TOTP',
                 label: 'User',
                 algorithm: 'SHA1',
                 digits: parseInt(this.digits) || 6,
@@ -446,21 +287,18 @@
               this.token = totp.generate();
               this.saveSettings();
             } catch (error) {
-              console.error('Error generating token:', error);
+              console.error('Error:', error);
               this.token = 'ERROR';
             }
           },
           startCountdown() {
             clearInterval(this.interval);
-            
-            // 计算当前周期剩余秒数
             const seconds = parseInt(this.period) || 30;
             const now = Math.floor(Date.now() / 1000);
             this.updatingIn = seconds - (now % seconds);
             
             this.interval = setInterval(() => {
               this.updatingIn -= 1;
-              
               if (this.updatingIn <= 0) {
                 this.updatingIn = seconds;
                 this.generateToken();
@@ -473,9 +311,7 @@
             
             clipboard.on('success', function() {
               toast.classList.add('show');
-              setTimeout(() => {
-                toast.classList.remove('show');
-              }, 2000);
+              setTimeout(() => toast.classList.remove('show'), 1500);
             });
           },
           saveSettings() {
@@ -485,9 +321,7 @@
                 digits: this.digits,
                 period: this.period
               }));
-            } catch (e) {
-              console.error('Could not save settings');
-            }
+            } catch (e) { console.error('保存设置失败'); }
           },
           loadSavedSettings() {
             try {
@@ -497,9 +331,7 @@
                 this.digits = settings.digits || 6;
                 this.period = settings.period || 30;
               }
-            } catch (e) {
-              console.error('Could not load settings');
-            }
+            } catch (e) { console.error('加载设置失败'); }
           }
         }
       }).mount('#app');
