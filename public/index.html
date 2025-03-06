@@ -5,145 +5,171 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>TOTP Generator</title>
   <link rel="stylesheet" href="css/bulma-0.9.4.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --primary-color: #3273dc;
-      --accent-color: #f14668;
-      --background-light: #f5f5f5;
-      --text-color: #363636;
+    [v-cloak] {
+      display: none;
     }
 
-    [v-cloak] { display: none; }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, sans-serif;
-      min-height: 100vh;
-      background-color: var(--background-light);
-      color: var(--text-color);
-      display: flex;
-      flex-direction: column;
+    html, body {
+      height: 100%;
+      font-family: 'Roboto', sans-serif;
+      background-color: #f7f8fc;
     }
 
-    .main-content { flex: 1; }
-    .footer { padding: 1.5rem 1rem; background-color: white; }
-    .container { max-width: 500px; }
-    
+    body > footer {
+      position: sticky;
+      top: 100vh;
+    }
+
+    .footer {
+      padding: 1.5rem;
+      background-color: white;
+      box-shadow: 0 -1px 3px rgba(0,0,0,0.05);
+    }
+
+    .container {
+      margin-top: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
     .title {
-      color: var(--primary-color);
-      font-size: 1.7rem;
+      color: #3273dc;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+    }
+
+    .field {
       margin-bottom: 1rem;
     }
 
-    .card {
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      margin-bottom: 1rem;
-    }
-
-    .card-header {
-      background: var(--primary-color);
-      padding: 0.8rem;
-      border-radius: 8px 8px 0 0;
-    }
-
-    .card-header-title {
-      color: white;
-      font-size: 1.2rem;
-    }
-
-    .card-content { padding: 1rem; }
-
-    .field:not(:last-child) { margin-bottom: 0.75rem; }
-    
     .label {
-      font-size: 0.9rem;
+      color: #363636;
       font-weight: 600;
-      margin-bottom: 0.25rem;
+      font-size: 0.9rem;
+      letter-spacing: 0.5px;
     }
 
     .input {
-      border-radius: 4px;
-      height: 2.25rem;
+      border: 1px solid #dbdee5;
+      border-radius: 6px;
+      box-shadow: none;
+      transition: all 0.2s;
+      padding-left: 0.75rem;
+      height: 2.5rem;
+    }
+
+    .input:focus {
+      border-color: #3273dc;
+      box-shadow: 0 0 0 1px rgba(50, 115, 220, 0.2);
+    }
+
+    .content {
+      margin-top: 1rem;
+      margin-bottom: 1rem;
     }
 
     .progress {
       height: 6px;
-      border-radius: 3px;
-      margin-top: 0.25rem;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 0.3rem;
     }
 
-    .token-display {
+    .progress.is-info {
+      background-color: #eaeaea;
+    }
+
+    .progress.is-info::-webkit-progress-value {
+      background-color: #3273dc;
+      transition: width 1s linear;
+    }
+
+    .box {
       background: white;
-      border-radius: 6px;
-      padding: 1rem 0.5rem;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-      text-align: center;
-      margin: 0.5rem 0;
-      border-left: 3px solid var(--primary-color);
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      border-top: 4px solid #3273dc;
     }
 
     .token {
-      font-size: 2.2rem;
-      font-weight: 600;
-      letter-spacing: 2px;
-      color: var(--primary-color);
+      font-size: 2.5rem;
+      font-weight: 700;
+      letter-spacing: 5px;
+      color: #3273dc;
+      margin: 0;
+      padding: 0;
+      transition: all 0.3s;
+      background-image: linear-gradient(135deg, #3273dc, #6596e7);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .control.is-clearfix {
+      margin-bottom: 1.5rem;
     }
 
     .copy-button {
-      background: var(--accent-color);
+      background-color: #3273dc;
       color: white;
       border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 4px;
-      font-size: 0.9rem;
+      border-radius: 6px;
+      padding: 0.6rem 1.5rem;
+      font-size: 1rem;
       font-weight: 500;
       cursor: pointer;
-      transition: all 0.2s ease;
-      margin-top: 0.5rem;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(50, 115, 220, 0.3);
     }
 
     .copy-button:hover {
-      opacity: 0.9;
+      background-color: #2366d1;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(50, 115, 220, 0.4);
+    }
+
+    .copy-button:active {
+      transform: translateY(1px);
+      box-shadow: 0 1px 4px rgba(50, 115, 220, 0.4);
+    }
+
+    .copy-button .icon {
+      margin-right: 0.5rem;
     }
 
     .instructions {
       background: white;
-      border-radius: 6px;
-      padding: 1rem;
-      margin-top: 1rem;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-      border-left: 3px solid var(--primary-color);
-      font-size: 0.9rem;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-top: 1.5rem;
+      color: #4a4a4a;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      border-left: 4px solid #3273dc;
     }
 
     .instructions h2 {
-      color: var(--primary-color);
-      font-size: 1.1rem;
-      margin-bottom: 0.5rem;
+      color: #3273dc;
+      margin-bottom: 1rem;
+      font-weight: 600;
     }
 
-    .instructions ol { 
-      margin-left: 0.5rem;
-      padding-left: 1.2rem;
+    .instructions p {
+      margin-bottom: 0.7rem;
+      line-height: 1.5;
+      font-size: 0.95rem;
     }
 
-    .instructions li { margin-bottom: 0.5rem; }
-
-    .time-remaining {
-      font-size: 0.8rem;
-      color: #666;
+    .has-text-grey {
+      color: #666 !important;
     }
 
-    .pulse {
-      animation: pulse 1s infinite;
-    }
-
-    @keyframes pulse {
-      0% { opacity: 1; }
-      50% { opacity: 0.7; }
-      100% { opacity: 1; }
-    }
-
+    /* 添加验证码复制成功的提示 */
     .toast {
       position: fixed;
       top: 1rem;
@@ -151,18 +177,50 @@
       transform: translateX(-50%);
       background-color: #48c774;
       color: white;
-      padding: 0.5rem 1rem;
+      padding: 0.6rem 1.2rem;
       border-radius: 4px;
       font-size: 0.9rem;
+      font-weight: 500;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.2);
       z-index: 1000;
       opacity: 0;
       visibility: hidden;
-      transition: opacity 0.3s;
+      transition: opacity 0.3s, visibility 0.3s;
     }
 
     .toast.show {
       opacity: 1;
       visibility: visible;
+    }
+
+    /* 在移动设备上调整样式 */
+    @media screen and (max-width: 768px) {
+      .token {
+        font-size: 2rem;
+        letter-spacing: 3px;
+      }
+      
+      .box {
+        padding: 1.2rem;
+      }
+      
+      .instructions {
+        padding: 1.2rem;
+      }
+    }
+
+    @media screen and (min-width: 769px) and (max-width: 1067px) {
+      .container {
+        max-width: 600px;
+        width: 600px;
+      }
+    }
+
+    @media screen and (min-width: 1068px) {
+      .container {
+        max-width: 600px;
+        width: 600px;
+      }
     }
   </style>
 </head>
@@ -171,170 +229,95 @@
   <script defer src="js/assets/vue-3.4.20.global.prod.js"></script>
   <script defer src="js/assets/otpauth-9.1.3.min.js"></script>
   <script defer src="js/assets/clipboard-2.0.6.min.js"></script>
+  <script defer src="js/app.js?v=1.2"></script>
 
-  <div id="toast" class="toast">已复制到剪贴板!</div>
+  <div id="toast" class="toast">验证码已复制到剪贴板!</div>
 
-  <section id="app" class="section main-content" v-cloak>
+  <section id="app" class="section" v-cloak>
     <div class="container">
-      <h1 class="title has-text-centered">TOTP 验证码生成器</h1>
-      
-      <div class="card">
-        <header class="card-header">
-          <p class="card-header-title">生成验证码</p>
-        </header>
-        <div class="card-content">
+      <h1 class="title has-text-centered">登录验证码获取</h1>
+
+      <div class="field">
+        <label class="label">你的秘钥</label>
+        <div class="control">
+          <input class="input" type="text" v-model="secret_key" placeholder="请输入你的秘钥">
+        </div>
+      </div>
+
+      <div class="columns">
+        <div class="column is-half">
           <div class="field">
-            <label class="label">您的秘钥</label>
+            <label class="label">验证码位数</label>
             <div class="control">
-              <input class="input" type="text" v-model="secret_key" placeholder="请输入Base-32格式的秘钥">
+              <input class="input" type="number" v-model="digits" placeholder="默认6位">
             </div>
           </div>
-
-          <div class="columns is-mobile">
-            <div class="column is-half">
-              <div class="field">
-                <label class="label">验证码位数</label>
-                <div class="control">
-                  <input class="input" type="number" v-model="digits" placeholder="6">
-                </div>
-              </div>
-            </div>
-            <div class="column is-half">
-              <div class="field">
-                <label class="label">周期(秒)</label>
-                <div class="control">
-                  <input class="input" type="number" v-model="period" placeholder="30">
-                </div>
-              </div>
-            </div>
-          </div>
-
+        </div>
+        <div class="column is-half">
           <div class="field">
-            <span class="time-remaining">{{ updatingIn }}秒后更新</span>
-            <progress class="progress is-info" v-bind:value="updatingIn" :max="period"></progress>
-          </div>
-
-          <div class="token-display">
-            <p class="token" :class="{ 'pulse': updatingIn <= 5 }" id="token">{{ token }}</p>
-          </div>
-
-          <div class="has-text-centered">
-            <button class="copy-button" id="clipboard-button" data-clipboard-target="#token">
-              复制验证码
-            </button>
+            <label class="label">令牌周期(秒)</label>
+            <div class="control">
+              <input class="input" type="number" v-model="period" placeholder="默认30秒">
+            </div>
           </div>
         </div>
       </div>
 
-      <details class="instructions">
-        <summary><b>使用说明</b></summary>
-        <ol>
-          <li>在<strong>秘钥</strong>输入框中粘贴您的秘钥字符串</li>
-          <li>验证码位数默认为6位，令牌周期默认为30秒</li>
-          <li>验证码每30秒自动更新一次</li>
-          <li>点击<strong>复制验证码</strong>按钮快速复制</li>
-        </ol>
-      </details>
+      <div class="content has-text-centered">
+        <span class="has-text-grey is-size-7">{{ updatingIn }} 秒后更新</span>
+        <progress class="progress is-info" v-bind:value="updatingIn" :max="period"></progress>
+      </div>
+
+      <div class="box">
+        <p class="title has-text-centered token" id="token">{{ token }}</p>
+      </div>
+
+      <div class="has-text-centered">
+        <button class="copy-button" id="clipboard-button" data-clipboard-target="#token">
+          <span class="icon">
+            <i class="fas fa-copy"></i>
+          </span>
+          <span>复制验证码</span>
+        </button>
+      </div>
+
+      <!-- 使用说明部分 -->
+      <div class="instructions">
+        <h2 class="title is-5">使用说明</h2>
+        <p><strong>1.</strong> 在"秘钥"输入框中输入你的秘钥，该秘钥是在订单卡密中一行字符串。</p>
+        <p><strong>2.</strong> 验证码位数默认为6位，令牌周期默认为30秒，通常无需修改。</p>
+        <p><strong>3.</strong> 系统会自动生成验证码并倒计时显示剩余有效时间。</p>
+        <p><strong>4.</strong> 点击"复制验证码"按钮，即可将验证码复制到剪贴板，用于登录验证。</p>
+      </div>
     </div>
   </section>
 
-  <footer class="footer has-text-centered">
-    <small>TOTP 验证码生成工具 &copy; 2025</small>
+  <footer class="footer">
+    <div class="container">
+      <div class="content has-text-centered">
+        <p>Built by <a href="https://hailizi.hkg.email">海蛎子</a></p>
+      </div>
+    </div>
   </footer>
 
+  <!-- Font Awesome for icons -->
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  
+  <!-- 添加复制功能的脚本 -->
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      const app = Vue.createApp({
-        data() {
-          return {
-            secret_key: '',
-            digits: 6,
-            period: 30,
-            token: '------',
-            updatingIn: 30
-          }
-        },
-        watch: {
-          secret_key() { this.generateToken(); },
-          digits() { this.generateToken(); },
-          period() {
-            this.generateToken();
-            this.startCountdown();
-          }
-        },
-        mounted() {
-          this.startCountdown();
-          this.setupClipboard();
-          this.loadSavedSettings();
-        },
-        methods: {
-          generateToken() {
-            if (!this.secret_key) {
-              this.token = '------';
-              return;
-            }
-            
-            try {
-              const totp = new OTPAuth.TOTP({
-                issuer: 'TOTP',
-                label: 'User',
-                algorithm: 'SHA1',
-                digits: parseInt(this.digits) || 6,
-                period: parseInt(this.period) || 30,
-                secret: OTPAuth.Secret.fromBase32(this.secret_key)
-              });
-              
-              this.token = totp.generate();
-              this.saveSettings();
-            } catch (error) {
-              console.error('Error:', error);
-              this.token = 'ERROR';
-            }
-          },
-          startCountdown() {
-            clearInterval(this.interval);
-            const seconds = parseInt(this.period) || 30;
-            const now = Math.floor(Date.now() / 1000);
-            this.updatingIn = seconds - (now % seconds);
-            
-            this.interval = setInterval(() => {
-              this.updatingIn -= 1;
-              if (this.updatingIn <= 0) {
-                this.updatingIn = seconds;
-                this.generateToken();
-              }
-            }, 1000);
-          },
-          setupClipboard() {
-            const clipboard = new ClipboardJS('#clipboard-button');
-            const toast = document.getElementById('toast');
-            
-            clipboard.on('success', function() {
-              toast.classList.add('show');
-              setTimeout(() => toast.classList.remove('show'), 1500);
-            });
-          },
-          saveSettings() {
-            try {
-              localStorage.setItem('totp-settings', JSON.stringify({
-                secret_key: this.secret_key,
-                digits: this.digits,
-                period: this.period
-              }));
-            } catch (e) { console.error('保存设置失败'); }
-          },
-          loadSavedSettings() {
-            try {
-              const settings = JSON.parse(localStorage.getItem('totp-settings'));
-              if (settings) {
-                this.secret_key = settings.secret_key || '';
-                this.digits = settings.digits || 6;
-                this.period = settings.period || 30;
-              }
-            } catch (e) { console.error('加载设置失败'); }
-          }
-        }
-      }).mount('#app');
+      // 设置剪贴板
+      if (typeof ClipboardJS !== 'undefined') {
+        var clipboard = new ClipboardJS('#clipboard-button');
+        var toast = document.getElementById('toast');
+        
+        clipboard.on('success', function() {
+          toast.classList.add('show');
+          setTimeout(function() {
+            toast.classList.remove('show');
+          }, 2000);
+        });
+      }
     });
   </script>
 </body>
