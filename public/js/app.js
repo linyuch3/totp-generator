@@ -7,7 +7,7 @@ function generateUUID() { return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(
 const app = Vue.createApp({
   data() {
     return {
-      workerUrl: '[https://multi-user-totp-api.your-username.workers.dev](https://multi-user-totp-api.your-username.workers.dev)', // <-- REPLACE THIS
+      workerUrl: '[https://multi-user-totp-api.hailizi.workers.dev/](https://multi-user-totp-api.hailizi.workers.dev/)', 
       
       user: {
         loggedIn: false,
@@ -35,8 +35,8 @@ const app = Vue.createApp({
   mounted: async function () {
     const sessionToken = localStorage.getItem('userSessionToken');
     const username = localStorage.getItem('username');
-    if (this.workerUrl.includes('your-username.workers.dev')) {
-        this.showToast('请先在 app.js 文件中设置您的 Worker URL！', true);
+    if (!this.workerUrl || this.workerUrl.includes('your-username.workers.dev')) {
+        this.showToast('请在 app.js 中配置您的 Worker URL！', true);
         return;
     }
     if (sessionToken && username) {
@@ -235,9 +235,10 @@ const app = Vue.createApp({
       }
     },
     async removeKey(index) {
+        const keyName = this.keys[index].name || `密钥 #${index + 1}`;
         this.keys.splice(index, 1);
         await this.saveKeysToCloud();
-        this.showToast(`密钥已删除。`);
+        this.showToast(`密钥 "${keyName}" 已删除。`);
     },
     async clearAllKeysWithConfirmation() {
         if (window.confirm("确定要清空所有密钥吗？")) {
@@ -246,8 +247,38 @@ const app = Vue.createApp({
             this.showToast("所有密钥已清空。");
         }
     },
-    showQrCode(keyEntry) { /* Logic Unchanged */ },
-    closeQrModal() { /* Logic Unchanged */ },
+    showQrCode(keyEntry) {
+        try {
+            const totp = new OTPAuth.TOTP({
+                issuer: keyEntry.name || 'TOTP Generator',
+                label: keyEntry.name || undefined,
+                algorithm: 'SHA1',
+                digits: parseInt(keyEntry.digits, 10) || 6,
+                period: parseInt(keyEntry.period, 10) || 30,
+                secret: OTPAuth.Secret.fromBase32(stripSpaces(keyEntry.secret)),
+            });
+            const uri = totp.toString();
+            this.qrCodeKeyName = keyEntry.name || keyEntry.secret.substring(0, 16) + '...';
+            this.isQrModalActive = true;
+            this.$nextTick(() => {
+                const container = document.getElementById('qrcode-container');
+                if (container) {
+                    container.innerHTML = ''; 
+                    const qr = qrcode(0, 'M'); 
+                    qr.addData(uri);
+                    qr.make();
+                    container.innerHTML = qr.createImgTag(5, 8); 
+                }
+            });
+        } catch (error) {
+            this.showToast("生成二维码失败，密钥格式可能不正确。", true);
+        }
+    },
+    closeQrModal() { 
+        this.isQrModalActive = false;
+        const container = document.getElementById('qrcode-container');
+        if (container) { container.innerHTML = ''; }
+    },
 
     async saveKeysToCloud() {
       if (!this.user.token) return;
@@ -294,10 +325,29 @@ const app = Vue.createApp({
         }
     },
     
-    copyToken(token) { /* Logic Unchanged */ },
-    showToast(message, isError = false) { /* Logic Unchanged */ },
+    copyToken(token) {
+        if (!token || isNaN(parseInt(token))) {
+            this.showToast('无效验证码，无法复制', true);
+            return;
+        }
+        navigator.clipboard.writeText(token).then(() => {
+            this.showToast(`验证码 "${token}" 已复制!`);
+        }).catch(err => {
+            this.showToast('复制失败!', true);
+        });
+    },
+    showToast(message, isError = false) {
+      const toast = document.getElementById('toast');
+      if (toast) {
+        toast.textContent = message;
+        toast.style.backgroundColor = isError ? 'var(--danger-color)' : 'var(--secondary-color)';
+        toast.classList.add('show');
+        if (this.toastTimeout) clearTimeout(this.toastTimeout);
+        this.toastTimeout = setTimeout(() => {
+          toast.classList.remove('show');
+        }, 3000);
+      }
+    },
   }
 });
-
-// Full implementation of "unchanged" methods can be found in the immersive artifact
 app.mount('#app');
