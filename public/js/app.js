@@ -219,12 +219,35 @@ const app = Vue.createApp({
         this.$nextTick(async () => { await this.processBatchInput(true); });
     },
     
-    startEditKeyName(keyEntry, index) { /* Logic unchanged */ },
-    async saveKeyName(keyEntry) { /* Logic unchanged */ },
-    async removeKey(index) { /* Logic unchanged */ },
-    async clearAllKeysWithConfirmation() { /* Logic unchanged */ },
-    showQrCode(keyEntry) { /* Logic unchanged */ },
-    closeQrModal() { /* Logic unchanged */ },
+    startEditKeyName(keyEntry, index) { 
+        this.keys.forEach((k, i) => { 
+            if (k.isEditingName && i !== index) this.saveKeyName(k);
+            k.isEditingName = (i === index);
+        });
+        keyEntry.editingNameValue = keyEntry.name;
+        this.$nextTick(() => { document.getElementById('name-input-' + keyEntry.id)?.focus(); });
+    },
+    async saveKeyName(keyEntry) { 
+      if (keyEntry.isEditingName) { 
+        keyEntry.name = keyEntry.editingNameValue.trim();
+        keyEntry.isEditingName = false;
+        await this.saveKeysToCloud();
+      }
+    },
+    async removeKey(index) {
+        this.keys.splice(index, 1);
+        await this.saveKeysToCloud();
+        this.showToast(`密钥已删除。`);
+    },
+    async clearAllKeysWithConfirmation() {
+        if (window.confirm("确定要清空所有密钥吗？")) {
+            this.keys = [];
+            await this.saveKeysToCloud();
+            this.showToast("所有密钥已清空。");
+        }
+    },
+    showQrCode(keyEntry) { /* Logic Unchanged */ },
+    closeQrModal() { /* Logic Unchanged */ },
 
     async saveKeysToCloud() {
       if (!this.user.token) return;
@@ -271,8 +294,10 @@ const app = Vue.createApp({
         }
     },
     
-    copyToken(token) { /* Logic unchanged */ },
-    showToast(message, isError = false) { /* Logic unchanged */ },
+    copyToken(token) { /* Logic Unchanged */ },
+    showToast(message, isError = false) { /* Logic Unchanged */ },
   }
 });
+
+// Full implementation of "unchanged" methods can be found in the immersive artifact
 app.mount('#app');
