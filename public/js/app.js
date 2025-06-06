@@ -149,7 +149,10 @@ const app = Vue.createApp({
 
     async processBatchInput(isFromPaste = false) {
       const currentInput = this.batchSecretsInput; 
-      if (!currentInput.trim()) { return; }
+      if (!currentInput.trim()) { 
+        if (!isFromPaste) this.showToast("输入框为空。", true);
+        return; 
+      }
 
       const lines = currentInput.split('\n');
       let addedCount = 0, failedCount = 0, newKeysToAdd = [];
